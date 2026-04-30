@@ -132,6 +132,59 @@
   .grid3 .card h3 { font-size: clamp(13px, 1.05vw, 16px); margin-bottom: 8px; }
   .grid3 .card ul { font-size: clamp(12px, 0.95vw, 15px); padding-left: 1em; }
   .grid3 .card ul li { margin: 0 0 6px 0; }
+  /* Real screenshot embeds */
+  .screenshot {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    display: block;
+    line-height: 0;
+  }
+  .screenshot img { width: 100%; height: auto; display: block; }
+  .screenshot-link {
+    display: block;
+    text-decoration: none;
+    cursor: zoom-in;
+    position: relative;
+  }
+  .screenshot-link::after {
+    content: "↗ open full size";
+    position: absolute;
+    top: 6px; right: 8px;
+    font-size: 10px;
+    color: #5a5a55;
+    background: rgba(255,255,255,0.92);
+    padding: 2px 7px;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .screenshot-link:hover::after { opacity: 1; }
+  .case-study {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 32px;
+    margin-top: 10px;
+    align-items: start;
+  }
+  .case-study .narrative ul { font-size: clamp(13px, 1.1vw, 17px); line-height: 1.45; }
+  .case-study .narrative ul li { margin: 0 0 10px 0; }
+  .case-study .visual-caption {
+    font-size: clamp(11px, 0.85vw, 14px);
+    color: var(--muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .closing-shots {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 980px;
+    margin: 6px auto 0 auto;
+    align-items: stretch;
+  }
   /* Slack-thread mockup for closing slide */
   .slack-thread {
     background: #ffffff;
@@ -1052,15 +1105,29 @@
 
 <!-- ========== SLIDE 5 ========== -->
 <section class="slide" data-title="5 / Case Study">
-  <h2>Case Study · March 30 Snow P0</h2>
-  <h1>What Tardis got wrong — and what we fixed</h1>
-  <ul>
-    <li><b>Alert:</b> WellSpan <code>incoming_calls_accepting</code> returned 503 for 2 patient calls</li>
-    <li><b>Tardis v1 said:</b> <span class="pill bad">wrong</span> "367 patient calls never connected" — counted DB <code>ERRORED</code> aggregate; baseline was 273–340 on prior Mondays</li>
-    <li><b>Reality:</b> 2 WellSpan 503s, both patients called back within 2 min and completed. Real cause: <b>GIL contention</b> from <code>find_all_utterances</code> scanning a ~6K-utterance long-running VNS call across multiple engine threads — <i>not</i> CPU saturation</li>
-    <li><b>Tardis PR</b> <code>c4efb25</code>: new <code>mandatory_investigation_rules.md</code> (8 rules), <code>call_failure_taxonomy.md</code>, <code>baseline_rates.md</code>, <code>known_chronic_issues.md</code>, Rule -1 for incident-time scoping, regression eval case</li>
-    <li><b>Snow PR #36254:</b> two state-leak bugs in the incoming-call rejection path, surfaced <i>through</i> the investigation</li>
-  </ul>
+  <h2>Case Study · how Tardis learned</h2>
+  <h1>From a wrong answer (Mar 30) → working triage today</h1>
+  <div class="case-study">
+    <div class="narrative">
+      <ul>
+        <li><b>Mar 30 P0:</b> WellSpan <code>incoming_calls_accepting</code> returned 503 for 2 patient calls.</li>
+        <li><b>Tardis v1 said</b> <span class="pill bad">wrong</span> "367 patient calls never connected" — counted DB <code>ERRORED</code> aggregate against a Monday baseline of 273–340.</li>
+        <li><b>Reality:</b> 2 WellSpan 503s, both callbacks completed within 2 min. Real cause: <b>GIL contention</b> from <code>find_all_utterances</code> on a long-running VNS call — <i>not</i> CPU saturation.</li>
+        <li><b>What we shipped:</b> <code>mandatory_investigation_rules.md</code> (8 rules), <code>call_failure_taxonomy.md</code>, <code>baseline_rates.md</code>, Rule -1 for incident-time scoping, plus a regression eval case (PR <code>c4efb25</code>).</li>
+        <li><b>Bonus:</b> the investigation surfaced two state-leak bugs in Snow (PR #36254).</li>
+      </ul>
+    </div>
+    <div>
+      <a href="assets/kd7-triage.png" target="_blank" rel="noopener" class="screenshot-link" title="Click to open full size">
+        <div class="screenshot">
+          <img src="assets/kd7-triage.png" alt="Tardis triage of kd7 503 alert in Slack — Track 1 + Track 2 methodology, already-recovered finding, low patient impact">
+        </div>
+      </a>
+      <div class="visual-caption">
+        Tardis today (Apr 28, kd7 503): two-track triage in 1 turn — <b>0.05% error rate</b>, <b>already recovered</b>, ~6 calls impacted. Clear infra/app split. Posted before Sam finished acknowledging.
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ========== SLIDE 6 — CONTRIBUTION GUIDE ========== -->
@@ -1155,38 +1222,21 @@
   <h2>One more thing</h2>
   <h1>PS — the team has feelings</h1>
 
-  <div class="slack-thread">
-    <div class="slack-msg">
-      <div class="slack-avatar bot">T</div>
-      <div>
-        <span class="slack-author">tardis</span><span class="slack-app">APP</span><span class="slack-time">Apr 20  ·  10:57 AM</span>
-        <div class="slack-text">📋 <b>Investigation Report</b><br>
-          🔴 <b>InferenceTimeoutException</b> — LLM inference timed out (&gt;4.0s) for model <code>ff2</code> from FormFillEngine<br>
-          <span style="color:#616061">[Investigation timed out after 771s and 4 turns. Partial findings above.]</span>
-        </div>
-        <div class="slack-meta">Duration: 771s  ·  Turns: 5</div>
+  <div class="closing-shots">
+    <a href="assets/most-useful-agent.png" target="_blank" rel="noopener" class="screenshot-link" title="Click to open full size">
+      <div class="screenshot">
+        <img src="assets/most-useful-agent.png" alt="Joe Redmond in Slack: 'It feels like the Inside Tardis presentation should be eng exchange! great app btw, seems like the most useful agent at the company IMO'">
       </div>
-    </div>
-    <div class="slack-msg">
-      <div class="slack-avatar">DJ</div>
-      <div>
-        <span class="slack-author">Dishank Jhaveri</span><span class="slack-time">10:58 AM</span>
-        <div class="slack-text">i love tardis <span class="channel">@on-call-platform</span></div>
-        <div class="slack-reactions"><span class="slack-reaction">🙌 1</span></div>
+    </a>
+    <a href="assets/team-loves-tardis.png" target="_blank" rel="noopener" class="screenshot-link" title="Click to open full size">
+      <div class="screenshot">
+        <img src="assets/team-loves-tardis.png" alt="Slack thread: Tardis investigation timed out after 771s and 4 turns with partial findings. Dishank Jhaveri replies 'i love tardis @on-call-platform'. Joe Redmond replies 'We all love tardis @Revanth Reddy Airre'.">
       </div>
-    </div>
-    <div class="slack-msg">
-      <div class="slack-avatar">JR</div>
-      <div>
-        <span class="slack-author">Joe Redmond</span><span class="slack-time">10:58 AM</span>
-        <div class="slack-text">We all love tardis <span class="channel">@Revanth Reddy Airre</span></div>
-        <div class="slack-reactions"><span class="slack-reaction">🙌 1</span></div>
-      </div>
-    </div>
+    </a>
   </div>
 
   <div class="closing-punchline">
-    Tardis just <span class="accent">timed out</span>.&nbsp; The team loved it anyway.<br>
+    Tardis just <span class="accent">timed out</span>. The team loved it anyway.<br>
     <span style="color: var(--muted); font-size: 0.7em;">That's the bar — humans putting up with imperfect first drafts because the second-best alternative is doing the dashboard chase themselves.</span>
   </div>
 </section>
