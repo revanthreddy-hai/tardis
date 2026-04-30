@@ -132,6 +132,50 @@
   .grid3 .card h3 { font-size: clamp(13px, 1.05vw, 16px); margin-bottom: 8px; }
   .grid3 .card ul { font-size: clamp(12px, 0.95vw, 15px); padding-left: 1em; }
   .grid3 .card ul li { margin: 0 0 6px 0; }
+  /* Slack-thread mockup for closing slide */
+  .slack-thread {
+    background: #ffffff;
+    color: #1d1c1d;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 8px 0;
+    font-family: "SF Pro Display", -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: clamp(13px, 1vw, 15px);
+    line-height: 1.45;
+    max-width: 720px;
+  }
+  .slack-msg { display: flex; gap: 10px; margin: 10px 0; align-items: flex-start; }
+  .slack-msg + .slack-msg { padding-top: 10px; border-top: 1px solid #f3f3f3; }
+  .slack-avatar {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #4cc9f0, #b5179e);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .slack-avatar.bot { background: #1e3a8a; }
+  .slack-author { font-weight: 700; color: #1d1c1d; }
+  .slack-app { font-size: 10px; background: #e8e8e8; color: #616061; padding: 1px 5px; border-radius: 3px; margin-left: 4px; vertical-align: 2px; }
+  .slack-time { color: #616061; font-size: 12px; margin-left: 6px; }
+  .slack-text { color: #1d1c1d; margin-top: 2px; }
+  .slack-text .channel { color: #1264a3; }
+  .slack-meta { color: #616061; font-size: 12px; font-style: italic; margin-top: 6px; }
+  .slack-reactions { margin-top: 6px; display: inline-flex; gap: 4px; }
+  .slack-reaction { background: #ddebff; border: 1px solid #1264a3; border-radius: 12px; padding: 1px 7px; font-size: 12px; color: #1264a3; }
+  .closing-punchline {
+    margin-top: 24px;
+    font-size: clamp(18px, 1.6vw, 24px);
+    color: var(--ink);
+    max-width: 760px;
+  }
+  .closing-punchline .accent { color: var(--accent); }
+  @media print {
+    .slack-thread { background: #ffffff !important; color: #1d1c1d !important; }
+  }
   .card {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -1103,6 +1147,47 @@
         <li>Candidate eval cases: past incidents with a known RCA</li>
       </ul>
     </div>
+  </div>
+</section>
+
+<!-- ========== SLIDE 8 — CLOSING / SOCIAL PROOF ========== -->
+<section class="slide" data-title="8 / One more thing">
+  <h2>One more thing</h2>
+  <h1>PS — the team has feelings</h1>
+
+  <div class="slack-thread">
+    <div class="slack-msg">
+      <div class="slack-avatar bot">T</div>
+      <div>
+        <span class="slack-author">tardis</span><span class="slack-app">APP</span><span class="slack-time">Apr 20  ·  10:57 AM</span>
+        <div class="slack-text">📋 <b>Investigation Report</b><br>
+          🔴 <b>InferenceTimeoutException</b> — LLM inference timed out (&gt;4.0s) for model <code>ff2</code> from FormFillEngine<br>
+          <span style="color:#616061">[Investigation timed out after 771s and 4 turns. Partial findings above.]</span>
+        </div>
+        <div class="slack-meta">Duration: 771s  ·  Turns: 5</div>
+      </div>
+    </div>
+    <div class="slack-msg">
+      <div class="slack-avatar">DJ</div>
+      <div>
+        <span class="slack-author">Dishank Jhaveri</span><span class="slack-time">10:58 AM</span>
+        <div class="slack-text">i love tardis <span class="channel">@on-call-platform</span></div>
+        <div class="slack-reactions"><span class="slack-reaction">🙌 1</span></div>
+      </div>
+    </div>
+    <div class="slack-msg">
+      <div class="slack-avatar">JR</div>
+      <div>
+        <span class="slack-author">Joe Redmond</span><span class="slack-time">10:58 AM</span>
+        <div class="slack-text">We all love tardis <span class="channel">@Revanth Reddy Airre</span></div>
+        <div class="slack-reactions"><span class="slack-reaction">🙌 1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="closing-punchline">
+    Tardis just <span class="accent">timed out</span>.&nbsp; The team loved it anyway.<br>
+    <span style="color: var(--muted); font-size: 0.7em;">That's the bar — humans putting up with imperfect first drafts because the second-best alternative is doing the dashboard chase themselves.</span>
   </div>
 </section>
 
