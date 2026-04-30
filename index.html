@@ -122,6 +122,16 @@
     gap: 30px;
     margin-top: 6px;
   }
+  .grid3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    margin-top: 6px;
+  }
+  .grid3 .card { padding: 16px 18px; }
+  .grid3 .card h3 { font-size: clamp(13px, 1.05vw, 16px); margin-bottom: 8px; }
+  .grid3 .card ul { font-size: clamp(12px, 0.95vw, 15px); padding-left: 1em; }
+  .grid3 .card ul li { margin: 0 0 6px 0; }
   .card {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -964,27 +974,35 @@
 <!-- ========== SLIDE 4 ========== -->
 <section class="slide" data-title="4 / What Makes It Tick">
   <h2>Key Features</h2>
-  <h1>Five things that matter</h1>
-  <div class="grid2">
+  <h1>What makes Tardis tick</h1>
+  <div class="grid3">
     <div class="card">
       <h3>1 · PII redaction before context</h3>
-      <ul><li>Redacting PII from tool results <b>before</b> they enter Claude's window. HIPAA-critical.</li></ul>
+      <ul><li>Tool results pass through 12 regex rules — MRN · DOB · SSN · phone · AWS keys · JWTs — <b>before</b> entering Claude's window. HIPAA-critical, runs on every tool call, never skipped.</li></ul>
     </div>
     <div class="card">
       <h3>2 · Three-tier memory + semantic recall</h3>
-      <ul><li>Every investigation stored with embeddings (BAAI/bge-small-en). Future runs recall similar cases by vector similarity + FTS5 + service + temporal decay. <b>This is the compounding loop.</b></li></ul>
+      <ul><li><b>Tier 1</b>: 15+ knowledge files (always). <b>Tier 2</b>: past investigations with embeddings (BAAI/bge-small-en). <b>Tier 3</b>: learned patterns — proven queries, anti-patterns. Hybrid recall: vector + FTS5 + service match + temporal decay.</li></ul>
     </div>
     <div class="card">
-      <h3>3 · Triage gate</h3>
-      <ul><li>Mandatory first-3-turns check on active-call impact; ask human if no real failures. Prevents the long spiral on ambient noise.</li></ul>
+      <h3>3 · Comprehensive context</h3>
+      <ul><li>13 read-only tools spanning the full stack — <b>infra</b> (Kong, kubectl, Prometheus model+app, Sumo) · <b>app</b> (Postgres, Redshift, GitHub code search) · <b>team</b> (Slack reader, team_knowledge). Plus knowledge files for runbooks, on-call playbooks, domain refs. No artificial silos.</li></ul>
     </div>
     <div class="card">
-      <h3>4 · Verification gate + mandatory rules</h3>
-      <ul><li>Causal claims require MECHANISM / DOSE-RESPONSE / REVERSAL. Unverified claims get rewritten to neutral observations before emission.</li></ul>
+      <h3>4 · Self-improvement loop  (PR-gated)</h3>
+      <ul><li>Post-investigation analyzer reads the thread (RCA + corrections + 👍/👎), identifies refuted claims and knowledge gaps, and opens <b>a GitHub PR</b> proposing fixes — knowledge-file additions, anti-patterns, eval cases. Posted to <code>#infra-owners</code>; merges only after human review. <b>Each incident makes Tardis smarter.</b></li></ul>
+    </div>
+    <div class="card">
+      <h3>5 · Crash recovery + audit trail</h3>
+      <ul><li>SQLite checkpoint <b>after every turn</b> — pod restart resumes mid-investigation (within 30 min). Per-investigation ledger captures cost, turns, tool calls, cache hit rate. JSONL event log for full replay.</li></ul>
+    </div>
+    <div class="card">
+      <h3>6 · Triage + verification</h3>
+      <ul><li><b>Triage gate</b>: first-3-turns active-call check filters noise before deep investigation. <b>Cross-judge gate</b> (planned): non-Anthropic LLM scores every critical RCA before posting; low confidence → loops back for more info. Causal claims require MECHANISM / DOSE-RESPONSE / REVERSAL.</li></ul>
     </div>
   </div>
-  <p style="margin-top: 22px; color: var(--muted); font-size: clamp(13px, 1vw, 16px);">
-    <b>5 · Eval framework</b> — 20 cases replay historical investigations and score across dimensions (tool selection, root-cause keywords, wrong-hypothesis avoidance). CI blocks regressions.
+  <p style="margin-top: 18px; color: var(--muted); font-size: clamp(12px, 0.95vw, 15px);">
+    <b>+ Eval framework</b> — 20 cases replay historical investigations and score tool selection, root-cause keywords, wrong-hypothesis avoidance. CI blocks regressions on every PR.
   </p>
 </section>
 
